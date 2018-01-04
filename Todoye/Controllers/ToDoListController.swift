@@ -11,7 +11,6 @@ import UIKit
 class ToDoListController: UITableViewController {
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    let defaults = UserDefaults.standard
     var itemArray = [Item]()
 
     override func viewDidLoad() {
