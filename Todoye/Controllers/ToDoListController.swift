@@ -10,15 +10,14 @@ import UIKit
 
 class ToDoListController: UITableViewController {
     
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let defaults = UserDefaults.standard
     var itemArray = [Item]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-            itemArray = items
-        }
+        loadItems()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -44,7 +43,8 @@ class ToDoListController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-
+        
+        saveItems()
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -59,9 +59,7 @@ class ToDoListController: UITableViewController {
             newItem.title = textField.text ?? "New item"
             self.itemArray.append(newItem)
             
-            // Crash
-            self.defaults.set(newItem, forKey: "TodoListArray")
-            
+            self.saveItems()
             self.tableView.reloadData()
         }
         
@@ -72,5 +70,26 @@ class ToDoListController: UITableViewController {
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error when decoding \(error)")
+            }
+        }
     }
 }
