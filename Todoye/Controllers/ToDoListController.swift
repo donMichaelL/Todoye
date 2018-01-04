@@ -16,18 +16,9 @@ class ToDoListController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
-  
-        let newItem2 = Item()
-        newItem2.title = "Buy Eggs"
-        itemArray.append(newItem2)
-        
-        
-        let newItem3 = Item()
-        newItem3.title = "Destroy Demogorgon"
-        
+        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
+            itemArray = items
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -67,6 +58,9 @@ class ToDoListController: UITableViewController {
             let newItem = Item()
             newItem.title = textField.text ?? "New item"
             self.itemArray.append(newItem)
+            
+            // Crash
+            self.defaults.set(newItem, forKey: "TodoListArray")
             
             self.tableView.reloadData()
         }
