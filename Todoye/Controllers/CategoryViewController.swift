@@ -64,4 +64,19 @@ extension CategoryViewController {
         cell.textLabel?.text = categories[indexPath.row].name!
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+}
+
+//MARK: - Working with segue
+extension CategoryViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! ToDoListController
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categories[indexPath.row]
+        }
+        
+    }
 }
