@@ -13,7 +13,6 @@ class CategoryViewController: UITableViewController {
     
     let realm = try! Realm()
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var categories: Results<Category>?
 
     override func viewDidLoad() {
